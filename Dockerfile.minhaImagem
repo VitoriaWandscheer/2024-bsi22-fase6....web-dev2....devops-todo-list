@@ -8,6 +8,7 @@ WORKDIR /app
 RUN apt-get update 
 RUN apt-get install -y nodejs npm
 RUN touch euquefiz.txt
+# RUN apk add --no-cache openssl-dev
 
 # Copy the application files
 # COPY minha/pasta/no/host minha/pasta/no/container

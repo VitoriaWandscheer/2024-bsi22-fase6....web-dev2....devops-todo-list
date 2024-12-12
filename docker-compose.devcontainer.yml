@@ -10,9 +10,13 @@ services:
       - 3000:3000
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/mydb?schema=${POSTGRES_DB}
+      - POSTGRES_SECONDARY_URL=postgresql://${POSTGRES_SECONDARY_USER}:${POSTGRES_SECONDARY_PASSWORD}@postgres_secondary:5433/mydb?schema=${POSTGRES_SECONDARY_DB}
+      - POSTGRES_TERTIARY_URL=postgresql://${POSTGRES_TERTIARY_USER}:${POSTGRES_TERTIARY_PASSWORD}@postgres_tertiary:5434/mydb?schema=${POSTGRES_TERTIARY_DB}
     depends_on:
       - redis
       - postgres
+      - postgres_secondary
+      - postgres_tertiary
 
   redis:
     image: redis:alpine
@@ -31,3 +35,26 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
+
+  postgres_secondary:
+    image: postgres:alpine
+    volumes:
+      - ./.data/postgres_secondary:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRES_SECONDARY_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_SECONDARY_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_SECONDARY_DB}
+    ports:
+      - 5433:5432
+
+  postgres_tertiary:
+    image: postgres:alpine
+    volumes:
+      - ./.data/postgres_tertiary:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRES_TERTIARY_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_TERTIARY_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_TERTIARY_DB}
+    ports:
+      - 5434:5432
+      
